@@ -1,0 +1,57 @@
+---
+title: "Exploratory Data Analysis"
+author: "Jia Xi Tay"
+date: "7 April 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(GGally)
+library(quantmod)
+library(xts)
+library(zoo)
+library(moments)
+library(lubridate)
+library(tidyverse)
+```
+
+##Import Dataset
+## Method 1
+Loading data downloaded from Coinbase
+
+```{r import}
+btc <- read.csv('coindesk.csv')
+btc$PosixDate <- as.POSIXct(ymd_hms(btc$Date))
+btc$Date <- NULL
+names(btc)[1]<-"Close"
+
+
+plot(btc$PosixDate, btc$Close,
+     xlab="Date",
+     ylab="Closing Price",
+     type="l")
+
+btc <- zoo(btc["Close"], btc$PosixDate)
+
+summary(btc)
+btc_monthly <- to.monthly(btc)
+btc_weekly <- to.weekly(btc)
+btc_quarterly <- to.quarterly(btc)
+btc_yearly <- to.yearly(btc)
+
+```
+## Method 2
+Loading data directly from Quantmod.
+Data source: Yahoo
+```{r quantmod load}
+BTC <- getSymbols(Symbols = 'BTCUSD=X', auto.assign = FALSE)
+head(BTC)
+plot(BTC)
+
+dailyret <- dailyReturn(BTC)
+monthlyret <- monthlyReturn(BTC)
+yearlyret <- yearlyReturn(BTC)
+```
