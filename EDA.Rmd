@@ -54,4 +54,7 @@ plot(BTC)
 dailyret <- dailyReturn(BTC)
 monthlyret <- monthlyReturn(BTC)
 yearlyret <- yearlyReturn(BTC)
+
+
+plot(monthlyret)
 ```
